@@ -22,7 +22,7 @@ class GridView {
      */
 
     set header(header) {
-        if (typeof header === 'string' && header.thim() !== '') {
+        if (typeof header === 'string' && header.trim() !== '') {
             this._header = header.trim();
 
             return true;
@@ -49,7 +49,7 @@ class GridView {
 
     set rootElement(rootElement) {
         if (document.querySelector(rootElement)) {
-            this._rootElement = document.querySelector(rootElement);
+            this._rootElement = rootElement;
 
             return true;
         }
@@ -62,6 +62,30 @@ class GridView {
      */
 
     render() {
-        //
+        console.log('render');
+        console.log(this._rootElement)
+
+        // showing header
+        if (this._header) {
+            const header = document.createElement('h1');
+
+            header.textContent = this._header;
+            this._headerClass.forEach(cssClass => {
+                header.classList.add(cssClass);
+            });
+
+            document.querySelector(this._rootElement).append(header);
+        }
+
+        // showing table
+        const table = document.qreateElement('table');
+
+        this._tableClass.forEach(cssClass => {
+            table.classList.add(cssClass);
+        });
+
+        const th = document.createElement('th');
+
+        // https://youtu.be/KQUVvTmcWkI?t=626
     }
 }
