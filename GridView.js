@@ -2,19 +2,21 @@ class GridView {
     /**
      * Class properties
      * @param [array] data
-     * @param [array] _attribute
      * @param [array] _tableClass
      * @param [string] _header
      * @param [array] _headerClass
+     * @param [obj] _attributes
      * @param [string] _rootElement
      */
 
     constructor() {
-        this._attribute = [];
         this._tableClass = [];
         this._header = '';
         this._headerClass = [];
+        this._attributes = {};
         this._rootElement = '#root';
+
+        this.data = [];
     }
 
     /**
@@ -38,13 +40,29 @@ class GridView {
     set headerClass(headerClass) {
         if (typeof headerClass === 'object') {
             this._headerClass = headerClass;
+
+            return true;
         }
 
         return false;
     }
 
     /**
-     * Method for setting header class
+     * Method for setting attributes
+     */
+
+    set attributes(attributes) {
+        if (typeof attributes === 'object') {
+            this._attributes = attributes;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Method for setting root element
      */
 
     set rootElement(rootElement) {
@@ -62,9 +80,6 @@ class GridView {
      */
 
     render() {
-        console.log('render');
-        console.log(this._rootElement)
-
         // showing header
         if (this._header) {
             const header = document.createElement('h1');
@@ -77,15 +92,60 @@ class GridView {
             document.querySelector(this._rootElement).append(header);
         }
 
-        // showing table
-        const table = document.qreateElement('table');
+        // creating table
+        const table = document.createElement('table');
 
+        // adding table classes
         this._tableClass.forEach(cssClass => {
             table.classList.add(cssClass);
         });
 
-        const th = document.createElement('th');
+        // creating first table row (header)
+        const trHeader = document.createElement('tr');
 
-        // https://youtu.be/KQUVvTmcWkI?t=626
+        for (let key in this._attributes) {
+            const th = document.createElement('th');
+
+            if (this._attributes[key].label) {
+                th.textContent = this._attributes[key].label;
+            } else {
+                th.textContent = key;
+            }
+
+            trHeader.append(th);
+        }
+
+        table.append(trHeader);
+
+        // creating next table rows (body)
+        for (let i = 0; i < this.data.length; i++) {
+            const dataObj = this.data[i];
+            const trBody = document.createElement('tr');
+
+            for (let key in this._attributes) {
+                const td = document.createElement('td');
+                let value = dataObj[key];
+                
+                if (this._attributes[key].value) {
+                    // checking for function in _attributes.country.value
+                    value = this._attributes[key].value(dataObj);
+                    td.textContent = value;
+                } else if (this._attributes[key].src) {
+                    // checking for _company.src
+                    td.innerHTML = value;
+                } else {
+                    td.textContent = value;
+                }
+
+                trBody.append(td);
+            }
+
+            table.append(trBody);
+        }
+
+        // table.append(trBody);
+
+        document.querySelector(this._rootElement).append(table);
+        
     }
 }
