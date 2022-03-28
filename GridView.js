@@ -1,18 +1,18 @@
 class GridView {
     /**
      * Class properties
-     * @param [array] data
-     * @param [array] _tableClass
      * @param [string] _header
      * @param [array] _headerClass
+     * @param [array] _tableClass
      * @param [obj] _attributes
      * @param [string] _rootElement
+     * @param [array] data
      */
 
     constructor() {
-        this._tableClass = [];
         this._header = '';
         this._headerClass = [];
+        this._tableClass = [];
         this._attributes = {};
         this._rootElement = '#root';
 
@@ -23,7 +23,7 @@ class GridView {
      * Method for setting header
      */
 
-    set header(header) {
+    setHeader(header) {
         if (typeof header === 'string' && header.trim() !== '') {
             this._header = header.trim();
 
@@ -37,7 +37,7 @@ class GridView {
      * Method for setting header class
      */
 
-    set headerClass(headerClass) {
+    setHeaderClass(headerClass) {
         if (typeof headerClass === 'object') {
             this._headerClass = headerClass;
 
@@ -48,10 +48,24 @@ class GridView {
     }
 
     /**
+     * Method for setting table class
+     */
+
+    setTableClass(tableClass) {
+    if (typeof tableClass === 'object') {
+        this._tableClass = tableClass;
+
+        return true;
+    }
+
+        return false;
+    }
+
+    /**
      * Method for setting attributes
      */
 
-    set attributes(attributes) {
+    setAttributes(attributes) {
         if (typeof attributes === 'object') {
             this._attributes = attributes;
 
@@ -65,7 +79,7 @@ class GridView {
      * Method for setting root element
      */
 
-    set rootElement(rootElement) {
+    setRootElement(rootElement) {
         if (document.querySelector(rootElement)) {
             this._rootElement = rootElement;
 
@@ -79,7 +93,14 @@ class GridView {
      * Method for showing GridViewTable
      */
 
-    render() {
+    render(data) {
+        // custom setters and class properies
+        this.setHeader(data.header);
+        this.setHeaderClass(data.headerClass);
+        this.setTableClass(data.tableClass);
+        this.setAttributes(data.attributes);
+        this.data = data.data
+
         // showing header
         if (this._header) {
             const header = document.createElement('h1');
@@ -117,7 +138,7 @@ class GridView {
 
         table.append(trHeader);
 
-        // creating next table rows (body)
+        // creating the other table rows (body)
         for (let i = 0; i < this.data.length; i++) {
             const dataObj = this.data[i];
             const trBody = document.createElement('tr');
@@ -143,9 +164,6 @@ class GridView {
             table.append(trBody);
         }
 
-        // table.append(trBody);
-
         document.querySelector(this._rootElement).append(table);
-        
     }
 }
